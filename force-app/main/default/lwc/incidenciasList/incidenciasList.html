@@ -1,14 +1,16 @@
 <template>
     <lightning-card title="Lista de Incidencias" icon-name="standard:case">
-        <template if:true={incidencias.data}>
+        <template if:true={incidencias}>
             <lightning-datatable
                 key-field="Id"
-                data={incidencias.data}
+                data={incidencias}
                 columns={columns}>
             </lightning-datatable>
         </template>
-        <template if:true={incidencias.error}>
-            <p class="slds-text-color_error">Error al cargar las incidencias.</p>
+        <template if:true={error}>
+            <p class="slds-text-color_error slds-p-around_medium">
+                Error al cargar las incidencias.
+            </p>
         </template>
     </lightning-card>
 </template>
