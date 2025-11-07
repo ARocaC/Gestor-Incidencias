@@ -1,0 +1,41 @@
+<template>
+    <lightning-card title="Nueva Incidencia">
+        <div class="slds-p-around_medium">
+            <lightning-input
+                label="Título"
+                value={titulo}
+                onchange={handleTituloChange}>
+            </lightning-input>
+
+            <lightning-textarea
+                label="Descripción"
+                value={descripcion}
+                onchange={handleDescripcionChange}>
+            </lightning-textarea>
+
+            <lightning-combobox
+                name="estado"
+                label="Estado"
+                value={estado}
+                placeholder="Selecciona un estado"
+                options={estadoOptions}
+                onchange={handleEstadoChange}>
+            </lightning-combobox>
+
+            <lightning-combobox
+                name="prioridad"
+                label="Prioridad"
+                value={prioridad}
+                placeholder="Selecciona una prioridad"
+                options={prioridadOptions}
+                onchange={handlePrioridadChange}>
+            </lightning-combobox>
+
+            <lightning-button
+                variant="brand"
+                label="Crear Incidencia"
+                onclick={handleSubmit}>
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>
