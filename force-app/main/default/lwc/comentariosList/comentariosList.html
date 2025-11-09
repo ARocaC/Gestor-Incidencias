@@ -1,0 +1,33 @@
+<template>
+    <lightning-card title="Comentarios">
+        <template if:true={comentarios}>
+            <template for:each={comentarios} for:item="comentario">
+                <div key={comentario.Id} class="slds-box slds-m-around_small">
+                    <p><strong>{comentario.Usuario__r.Name}</strong></p>
+                    <p>{comentario.Texto__c}</p>
+                    <p class="slds-text-color_weak slds-text-body_small">{comentario.Fecha__c}</p>
+                </div>
+            </template>
+        </template>
+
+        <template if:true={error}>
+            <p class="slds-text-color_error">{error}</p>
+        </template>
+
+        <div class="slds-m-top_medium">
+            <lightning-textarea
+                label="Nuevo comentario"
+                value={nuevoComentario}
+                onchange={handleInputChange}
+                placeholder="Escribe un comentario..."
+            ></lightning-textarea>
+
+            <lightning-button
+                label="Agregar comentario"
+                variant="brand"
+                class="slds-m-top_small"
+                onclick={handleAddComment}
+            ></lightning-button>
+        </div>
+    </lightning-card>
+</template>
