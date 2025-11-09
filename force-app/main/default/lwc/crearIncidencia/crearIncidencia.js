@@ -13,7 +13,7 @@ export default class CrearIncidencia extends LightningElement {
         return [
             { label: 'Nueva', value: 'Nueva' },
             { label: 'En progreso', value: 'En progreso' },
-            { label: 'Cerrada', value: 'Cerrada' }
+            { label: 'Cerrado', value: 'Cerrado' }
         ];
     }
 
@@ -43,7 +43,19 @@ export default class CrearIncidencia extends LightningElement {
 
     async handleSubmit() {
         try {
-            await crearIncidencia({
+            // Validaciones mínimas
+            if (!this.titulo || !this.descripcion || !this.estado || !this.prioridad) {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Campos requeridos',
+                        message: 'Completa Título, Descripción, Estado y Prioridad.',
+                        variant: 'warning'
+                    })
+                );
+                return;
+            }
+
+            const resultId = await crearIncidencia({
                 titulo: this.titulo,
                 descripcion: this.descripcion,
                 estado: this.estado,
@@ -59,16 +71,25 @@ export default class CrearIncidencia extends LightningElement {
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Éxito',
-                    message: 'Incidencia creada correctamente',
+                    message: `Incidencia ${resultId} creada correctamente`,
                     variant: 'success'
                 })
             );
+
+            // Notificar al contenedor/lista que se ha creado una incidencia (para refrescar)
+            this.dispatchEvent(new CustomEvent('incidenciacreated', { detail: { id: resultId } }));
         } catch (error) {
+            // Mostrar mensaje del servidor si está disponible
+            const message =
+                (error && error.body && error.body.message) ||
+                (error && error.message) ||
+                'Error al crear la incidencia';
+            // eslint-disable-next-line no-console
             console.error('Error al crear la incidencia', error);
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error',
-                    message: 'Error al crear la incidencia',
+                    message,
                     variant: 'error'
                 })
             );
