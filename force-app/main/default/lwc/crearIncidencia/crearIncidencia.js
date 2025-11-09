@@ -11,7 +11,7 @@ export default class CrearIncidencia extends LightningElement {
     // Opciones de picklist
     get estadoOptions() {
         return [
-            { label: 'Nueva', value: 'Nueva' },
+            { label: 'Nuevo', value: 'Nuevo' },
             { label: 'En progreso', value: 'En progreso' },
             { label: 'Cerrado', value: 'Cerrado' }
         ];

@@ -3,13 +3,9 @@ import getIncidencias from '@salesforce/apex/IncidenciaController.getIncidencias
 
 const COLUMNS = [
     {
-        label: 'Nombre',
-        fieldName: 'recordLink',
-        type: 'url',
-        typeAttributes: {
-            label: { fieldName: 'Name' },
-            target: '_blank'
-        }
+        label: 'Título',
+        fieldName: 'Titulo__c',
+        type: 'text'
     },
     { label: 'Estado', fieldName: 'Estado__c' },
     { label: 'Prioridad', fieldName: 'Prioridad__c' },
