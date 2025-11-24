@@ -17,7 +17,7 @@ public with sharing class ComentarioController {
 
     // Crear un nuevo comentario asociado a una incidencia
     @AuraEnabled
-    public static Id crearComentario(Id incidenciaId, String texto) {
+    public static Id crearComentario(Id incidenciaId, String texto, String archivoNombre) {
         try {
             if (incidenciaId == null || String.isBlank(texto)) {
                 throw new AuraHandledException('Incidencia o texto del comentario no pueden estar vacíos.');
@@ -26,6 +26,7 @@ public with sharing class ComentarioController {
             Comentario__c nuevo = new Comentario__c();
             nuevo.Incidencia__c = incidenciaId;
             nuevo.Texto__c = texto;
+            nuevo.Archivo__c = archivoNombre;
             nuevo.Usuario__c = UserInfo.getUserId();
             nuevo.Fecha__c = Date.today();
 
