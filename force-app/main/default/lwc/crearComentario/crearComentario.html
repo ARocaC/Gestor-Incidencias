@@ -1,0 +1,18 @@
+<template>
+    <lightning-card title="Nuevo comentario">
+        <div class="slds-p-around_medium">
+            <lightning-textarea
+                label="Comentario"
+                value={texto}
+                onchange={handleTextoChange}
+            ></lightning-textarea>
+
+            <lightning-button
+                variant="brand"
+                label="Enviar"
+                class="slds-m-top_small"
+                onclick={handleSubmit}
+            ></lightning-button>
+        </div>
+    </lightning-card>
+</template>
