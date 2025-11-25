@@ -33,4 +33,12 @@ public with sharing class IncidenciaController {
             LIMIT 1
         ];
     }
+
+    @AuraEnabled
+    public static void actualizarEstado(Id incidenciaId, String nuevoEstado) {
+        Incidencia__c inc = [SELECT Id, Estado__c FROM Incidencia__c WHERE Id = :incidenciaId];
+        inc.Estado__c = nuevoEstado;
+        update inc;
+    }
+
 }
