@@ -2,20 +2,32 @@
     <lightning-card title="Detalle de Incidencia" icon-name="standard:record">
         <template if:true={incidencia}>
             <div class="slds-m-around_medium">
+
                 <p><strong>Título:</strong> {incidencia.Titulo__c}</p>
                 <p><strong>Descripción:</strong> {incidencia.Descripcion__c}</p>
 
+                <!--ESTADO -->
                 <div class="slds-m-vertical_small">
                     <p><strong>Estado:</strong> {incidencia.Estado__c}</p>
 
                     <lightning-button 
                         label="Cambiar Estado"
                         variant="brand-outline"
-                        onclick={openModal}>
+                        onclick={openEstadoModal}>
                     </lightning-button>
                 </div>
 
-                <p><strong>Prioridad:</strong> {incidencia.Prioridad__c}</p>
+                <!--PRIORIDAD -->
+                <div class="slds-m-vertical_small">
+                    <p><strong>Prioridad:</strong> {incidencia.Prioridad__c}</p>
+
+                    <lightning-button 
+                        label="Cambiar Prioridad"
+                        variant="brand-outline"
+                        onclick={openPrioridadModal}>
+                    </lightning-button>
+                </div>
+
                 <p><strong>Fecha de creación:</strong> {incidencia.Fecha_Creacion__c}</p>
                 <template if:true={incidencia.Usuario__r}>
                     <p><strong>Usuario:</strong> {incidencia.Usuario__r.Name}</p>
@@ -25,7 +37,8 @@
                 </template>
             </div>
 
-            <div class="slds-border_bottom slds-m-vertical_medium" role="separator" aria-hidden="true"></div>
+
+            <hr class="slds-m-vertical_small" />
 
             <div class="slds-m-around_medium">
                 <h2 class="slds-text-heading_small">Comentarios</h2>
@@ -36,14 +49,11 @@
         <template if:true={error}>
             <div class="slds-m-around_medium">Error al cargar la incidencia</div>
         </template>
-
-        <template if:false={incidencia}>
-            <div class="slds-m-around_medium">Cargando incidencia...</div>
-        </template>
     </lightning-card>
 
-    <template if:true={showModal}>
-        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+    <!--CAMBIAR ESTADO -->
+    <template if:true={showEstadoModal}>
+        <section class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
 
                 <header class="slds-modal__header">
@@ -62,17 +72,40 @@
                 </div>
 
                 <footer class="slds-modal__footer">
-                    <lightning-button 
-                        label="Cancelar" 
-                        onclick={closeModal}>
-                    </lightning-button>
+                    <lightning-button label="Cancelar" onclick={closeEstadoModal}></lightning-button>
+                    <lightning-button label="Guardar" variant="brand" onclick={guardarEstado}></lightning-button>
+                </footer>
 
-                    <lightning-button 
-                        label="Guardar"
-                        variant="brand"
-                        onclick={guardarEstado}
-                        class="slds-m-left_small">
-                    </lightning-button>
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+
+    <!--CAMBIAR PRIORIDAD -->
+    <template if:true={showPrioridadModal}>
+        <section class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">Cambiar Prioridad</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-combobox
+                        name="prioridad"
+                        label="Nueva Prioridad"
+                        value={nuevaPrioridad}
+                        placeholder="Selecciona Prioridad"
+                        options={prioridadOptions}
+                        onchange={handlePrioridadChange}>
+                    </lightning-combobox>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancelar" onclick={closePrioridadModal}></lightning-button>
+                    <lightning-button label="Guardar" variant="brand" onclick={guardarPrioridad}></lightning-button>
                 </footer>
 
             </div>
