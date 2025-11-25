@@ -41,4 +41,11 @@ public with sharing class IncidenciaController {
         update inc;
     }
 
+    @AuraEnabled
+    public static void actualizarPrioridad(Id incidenciaId, String nuevaPrioridad) {
+        Incidencia__c inc = [SELECT Id, Prioridad__c FROM Incidencia__c WHERE Id = :incidenciaId];
+        inc.Prioridad__c = nuevaPrioridad;
+        update inc;
+    }
+
 }

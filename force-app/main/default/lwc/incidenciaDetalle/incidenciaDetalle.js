@@ -1,24 +1,36 @@
 import { LightningElement, api, wire } from 'lwc';
 import getIncidencia from '@salesforce/apex/IncidenciaController.getIncidencia';
 import actualizarEstado from '@salesforce/apex/IncidenciaController.actualizarEstado';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import actualizarPrioridad from '@salesforce/apex/IncidenciaController.actualizarPrioridad';
 import { refreshApex } from '@salesforce/apex';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class IncidenciaDetalle extends LightningElement {
     @api recordId;
 
     incidencia;
     error;
-
-    showModal = false;
-    nuevoEstado = '';
-
     wiredData;
 
+    // Modales
+    showEstadoModal = false;
+    showPrioridadModal = false;
+
+    // Valores temporales
+    nuevoEstado = '';
+    nuevaPrioridad = '';
+
+    // Opciones picklists
     estadoOptions = [
-        { label: 'Nuevo', value: 'Nuevo' },
+        { label: 'Nueva', value: 'Nueva' },
         { label: 'En progreso', value: 'En progreso' },
         { label: 'Cerrado', value: 'Cerrado' }
+    ];
+
+    prioridadOptions = [
+        { label: 'Baja', value: 'Baja' },
+        { label: 'Media', value: 'Media' },
+        { label: 'Alta', value: 'Alta' }
     ];
 
     @wire(getIncidencia, { incidenciaId: '$recordId' })
@@ -27,57 +39,87 @@ export default class IncidenciaDetalle extends LightningElement {
         if (result.data) {
             this.incidencia = result.data;
             this.error = undefined;
-        } else if (result.error) {
+        } else {
             this.error = result.error;
             this.incidencia = undefined;
         }
     }
 
-    // Abrir Modal
-    openModal() {
-        this.showModal = true;
+    // --- MODAL ESTADO ---
+    openEstadoModal() {
         this.nuevoEstado = this.incidencia?.Estado__c;
+        this.showEstadoModal = true;
     }
 
-    // Cerrar Modal
-    closeModal() {
-        this.showModal = false;
+    closeEstadoModal() {
+        this.showEstadoModal = false;
     }
 
-    // Cambiar picklist
     handleEstadoChange(event) {
         this.nuevoEstado = event.detail.value;
     }
 
-    // Guardar cambio en Apex
     async guardarEstado() {
         try {
-            await actualizarEstado({
-                incidenciaId: this.recordId,
-                nuevoEstado: this.nuevoEstado
-            });
+            await actualizarEstado({ incidenciaId: this.recordId, nuevoEstado: this.nuevoEstado });
 
-            this.showModal = false;
+            this.closeEstadoModal();
 
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Estado actualizado',
-                    message: 'El estado se ha cambiado correctamente.',
+                    message: 'El estado se actualizó correctamente.',
                     variant: 'success'
                 })
             );
 
-            // Recargar datos
             await refreshApex(this.wiredData);
-
         } catch (error) {
+            this.showError(error);
+        }
+    }
+
+    // --- MODAL PRIORIDAD ---
+    openPrioridadModal() {
+        this.nuevaPrioridad = this.incidencia?.Prioridad__c;
+        this.showPrioridadModal = true;
+    }
+
+    closePrioridadModal() {
+        this.showPrioridadModal = false;
+    }
+
+    handlePrioridadChange(event) {
+        this.nuevaPrioridad = event.detail.value;
+    }
+
+    async guardarPrioridad() {
+        try {
+            await actualizarPrioridad({ incidenciaId: this.recordId, nuevaPrioridad: this.nuevaPrioridad });
+
+            this.closePrioridadModal();
+
             this.dispatchEvent(
                 new ShowToastEvent({
-                    title: 'Error',
-                    message: error.body.message,
-                    variant: 'error'
+                    title: 'Prioridad actualizada',
+                    message: 'La prioridad se actualizó correctamente.',
+                    variant: 'success'
                 })
             );
+
+            await refreshApex(this.wiredData);
+        } catch (error) {
+            this.showError(error);
         }
+    }
+
+    showError(error) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: 'Error',
+                message: error.body?.message || error.message,
+                variant: 'error'
+            })
+        );
     }
 }
