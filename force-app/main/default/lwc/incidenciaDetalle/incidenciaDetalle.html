@@ -1,0 +1,38 @@
+<template>
+    <lightning-card title="Detalle de Incidencia" icon-name="standard:record">
+        <template if:true={incidencia}>
+            <div class="slds-m-around_medium">
+                <p><strong>Título:</strong> {incidencia.Titulo__c}</p>
+                <p><strong>Descripción:</strong> {incidencia.Descripcion__c}</p>
+                <p><strong>Estado:</strong> {incidencia.Estado__c}</p>
+                <p><strong>Prioridad:</strong> {incidencia.Prioridad__c}</p>
+                <p><strong>Fecha de creación:</strong> {incidencia.Fecha_Creacion__c}</p>
+                <template if:true={incidencia.Usuario__r}>
+                    <p><strong>Usuario:</strong> {incidencia.Usuario__r.Name}</p>
+                </template>
+                <template if:false={incidencia.Usuario__r}>
+                    <p><strong>Usuario:</strong> -</p>
+                </template>
+            </div>
+
+            <hr class="slds-m-vertical_medium" />
+
+            <div class="slds-m-around_medium">
+                <h2 class="slds-text-heading_small">Comentarios</h2>
+                <c-comentarios-list incidencia-id={recordId}></c-comentarios-list>
+
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-m-around_medium slds-text-color_error">
+                <p class="slds-text-heading_small">Se produjo un error al cargar la incidencia</p>
+                <pre class="slds-m-top_x-small" style="white-space: pre-wrap;">{error}</pre>
+            </div>
+        </template>
+
+        <template if:false={incidencia}>
+            <div class="slds-m-around_medium">Cargando incidencia...</div>
+        </template>
+    </lightning-card>
+</template>
