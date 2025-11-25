@@ -20,6 +20,17 @@ public with sharing class IncidenciaController {
             // Propaga un mensaje claro al LWC
             throw new AuraHandledException('Error al crear incidencia: ' + e.getMessage());
         }
+    }
 
+    @AuraEnabled(cacheable=true)
+    public static Incidencia__c getIncidencia(Id incidenciaId) {
+        return [
+            SELECT Id, Titulo__c, Descripcion__c, Estado__c, Prioridad__c,
+                Fecha_Creacion__c,
+                Usuario__r.Name
+            FROM Incidencia__c
+            WHERE Id = :incidenciaId
+            LIMIT 1
+        ];
     }
 }
