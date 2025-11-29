@@ -4,13 +4,18 @@ import getIncidencias from '@salesforce/apex/IncidenciaController.getIncidencias
 const COLUMNS = [
     {
         label: 'Título',
-        fieldName: 'Titulo__c',
-        type: 'text'
+        fieldName: 'recordLink',
+        type: 'url',
+        typeAttributes: {
+            label: { fieldName: 'Titulo__c' },
+            target: '_self'
+        }
     },
     { label: 'Estado', fieldName: 'Estado__c' },
     { label: 'Prioridad', fieldName: 'Prioridad__c' },
     { label: 'Fecha de Creación', fieldName: 'Fecha_Creacion__c', type: 'date' }
 ];
+
 
 export default class IncidenciasList extends LightningElement {
     columns = COLUMNS;

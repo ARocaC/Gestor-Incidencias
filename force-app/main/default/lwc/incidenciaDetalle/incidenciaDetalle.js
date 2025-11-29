@@ -1,8 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
-import getIncidencia from '@salesforce/apex/IncidenciaController.getIncidencia';
-import actualizarEstado from '@salesforce/apex/IncidenciaController.actualizarEstado';
-import actualizarPrioridad from '@salesforce/apex/IncidenciaController.actualizarPrioridad';
+import getIncidencias from '@salesforce/apex/IncidenciaController.getIncidencias';
+import cerrarIncidencia from '@salesforce/apex/IncidenciaController.cerrarIncidencia';
 import { refreshApex } from '@salesforce/apex';
+import actualizarIncidencia from '@salesforce/apex/IncidenciaController.actualizarIncidencia';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class IncidenciaDetalle extends LightningElement {
@@ -12,19 +12,15 @@ export default class IncidenciaDetalle extends LightningElement {
     error;
     wiredData;
 
-    // Modales
     showEstadoModal = false;
     showPrioridadModal = false;
 
-    // Valores temporales
     nuevoEstado = '';
     nuevaPrioridad = '';
 
-    // Opciones picklists
     estadoOptions = [
-        { label: 'Nueva', value: 'Nueva' },
-        { label: 'En progreso', value: 'En progreso' },
-        { label: 'Cerrado', value: 'Cerrado' }
+        { label: 'Nuevo', value: 'Nuevo' },
+        { label: 'En progreso', value: 'En progreso' }
     ];
 
     prioridadOptions = [
@@ -33,11 +29,12 @@ export default class IncidenciaDetalle extends LightningElement {
         { label: 'Alta', value: 'Alta' }
     ];
 
-    @wire(getIncidencia, { incidenciaId: '$recordId' })
+    @wire(getIncidencias)
     wiredIncidencia(result) {
         this.wiredData = result;
         if (result.data) {
-            this.incidencia = result.data;
+            const lista = result.data || [];
+            this.incidencia = this.recordId ? lista.find(i => i.Id === this.recordId) : (lista.length ? lista[0] : undefined);
             this.error = undefined;
         } else {
             this.error = result.error;
@@ -45,7 +42,25 @@ export default class IncidenciaDetalle extends LightningElement {
         }
     }
 
-    // --- MODAL ESTADO ---
+    async handleCerrarIncidencia() {
+        try {
+            await cerrarIncidencia({ incidenciaId: this.recordId });
+
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Incidencia cerrada',
+                    message: 'La incidencia ha sido cerrada correctamente.',
+                    variant: 'success'
+                })
+            );
+
+            await refreshApex(this.wiredData);
+
+        } catch (error) {
+            this.showError(error);
+        }
+    }
+
     openEstadoModal() {
         this.nuevoEstado = this.incidencia?.Estado__c;
         this.showEstadoModal = true;
@@ -61,7 +76,8 @@ export default class IncidenciaDetalle extends LightningElement {
 
     async guardarEstado() {
         try {
-            await actualizarEstado({ incidenciaId: this.recordId, nuevoEstado: this.nuevoEstado });
+            const prioridadActual = this.incidencia?.Prioridad__c || null;
+            await actualizarIncidencia({ incidenciaId: this.recordId, estado: this.nuevoEstado, prioridad: prioridadActual });
 
             this.closeEstadoModal();
 
@@ -79,7 +95,6 @@ export default class IncidenciaDetalle extends LightningElement {
         }
     }
 
-    // --- MODAL PRIORIDAD ---
     openPrioridadModal() {
         this.nuevaPrioridad = this.incidencia?.Prioridad__c;
         this.showPrioridadModal = true;
@@ -95,7 +110,9 @@ export default class IncidenciaDetalle extends LightningElement {
 
     async guardarPrioridad() {
         try {
-            await actualizarPrioridad({ incidenciaId: this.recordId, nuevaPrioridad: this.nuevaPrioridad });
+            // No método dedicado en Apex; reutilizamos actualizarIncidencia pasando la prioridad nueva y manteniendo el estado actual
+            const estadoActual = this.incidencia?.Estado__c || null;
+            await actualizarIncidencia({ incidenciaId: this.recordId, estado: estadoActual, prioridad: this.nuevaPrioridad });
 
             this.closePrioridadModal();
 

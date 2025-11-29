@@ -6,7 +6,6 @@
                 <p><strong>Título:</strong> {incidencia.Titulo__c}</p>
                 <p><strong>Descripción:</strong> {incidencia.Descripcion__c}</p>
 
-                <!--ESTADO -->
                 <div class="slds-m-vertical_small">
                     <p><strong>Estado:</strong> {incidencia.Estado__c}</p>
 
@@ -17,7 +16,6 @@
                     </lightning-button>
                 </div>
 
-                <!--PRIORIDAD -->
                 <div class="slds-m-vertical_small">
                     <p><strong>Prioridad:</strong> {incidencia.Prioridad__c}</p>
 
@@ -29,14 +27,23 @@
                 </div>
 
                 <p><strong>Fecha de creación:</strong> {incidencia.Fecha_Creacion__c}</p>
+
                 <template if:true={incidencia.Usuario__r}>
                     <p><strong>Usuario:</strong> {incidencia.Usuario__r.Name}</p>
                 </template>
                 <template if:false={incidencia.Usuario__r}>
                     <p><strong>Usuario:</strong> —</p>
                 </template>
-            </div>
 
+                <div class="slds-m-top_medium">
+                    <lightning-button
+                        label="Cerrar Incidencia"
+                        variant="destructive"
+                        onclick={handleCerrarIncidencia}>
+                    </lightning-button>
+                </div>
+
+            </div>
 
             <hr class="slds-m-vertical_small" />
 
@@ -51,7 +58,7 @@
         </template>
     </lightning-card>
 
-    <!--CAMBIAR ESTADO -->
+
     <template if:true={showEstadoModal}>
         <section class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
@@ -83,7 +90,6 @@
     </template>
 
 
-    <!--CAMBIAR PRIORIDAD -->
     <template if:true={showPrioridadModal}>
         <section class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
