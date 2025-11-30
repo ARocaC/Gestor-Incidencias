@@ -95,8 +95,7 @@ Chrome / Firefox Developer Tools
 
 ⚙️ Instalación y uso
 1️⃣ Clonar el repositorio
-git clone https://github.com/tu_usuario/fixidence.git
-cd fixidence
+git clone https://github.com/ARocaC/Gestor-Incidencias.git
 
 2️⃣ Instalar dependencias de Salesforce
 
