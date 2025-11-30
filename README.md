@@ -156,6 +156,13 @@ Objeto personalizado Comentario__c
       v
 [ Salesforce Database ]
 
+🖼️ Vistas previas de Fixidence
+
+<img width="1914" height="799" alt="Captura de pantalla 2025-11-30 224934" src="https://github.com/user-attachments/assets/176c1fd5-a0c1-4827-9c8a-94b482256be1" />
+<img width="1901" height="818" alt="Captura de pantalla 2025-11-30 225001" src="https://github.com/user-attachments/assets/19547ff9-12e2-491c-9fbd-06f649e8c215" />
+
+
+
 📝 Cómo contribuir
 
 ¡Siéntete libre de enviar PRs!
